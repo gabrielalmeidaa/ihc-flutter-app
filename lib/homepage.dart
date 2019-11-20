@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ihc_project/details.dart';
+import 'package:ihc_project/MenuHamburger/Hamburger.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -22,11 +23,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(FontAwesomeIcons.arrowLeft),
-            onPressed: () {
-              //
-            }),
+
         title: Text("UnB"),
         actions: <Widget>[
           IconButton(
@@ -43,6 +40,7 @@ class HomePageState extends State<HomePage> {
           _zoomplusfunction(),
         ],
       ),
+      drawer: Hamburger(),
     );
   }
 
