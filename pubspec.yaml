@@ -27,6 +27,8 @@ dependencies:
   google_maps_flutter: ^0.5.21
   font_awesome_flutter: ^8.2.0
   flutter_rating_bar: ^1.1.0
+  rflutter_alert: ^1.0.3
+
 
 dev_dependencies:
   flutter_test:

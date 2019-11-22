@@ -107,7 +107,7 @@ class DetailScreen extends StatelessWidget {
             },
           ),
           Container(
-            margin: const EdgeInsets.only(top: 8),
+            margin: const EdgeInsets.only(top: 8, bottom: 32),
             child: Text(
               label,
               style: TextStyle(
