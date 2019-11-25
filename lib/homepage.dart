@@ -4,6 +4,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ihc_project/details.dart';
 import 'package:ihc_project/MenuHamburger/Hamburger.dart';
+import 'package:ihc_project/filter.dart';
+import 'package:ihc_project/main.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -18,18 +21,41 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
   }
-    double zoomVal=5.0;
+  double zoomVal=18.0;
+
   @override
   Widget build(BuildContext context) {
+    var filterButton = Container(
+      padding: const EdgeInsets.only(top: 400),
+      child: RawMaterialButton(
+      onPressed: () {
+        Navigator.push(
+          context, 
+          MaterialPageRoute(builder: (context) => FilterScreen())
+        );
+      },
+      child: new Icon(
+        Icons.tune,
+        color: Colors.blue,
+        size: 35.0,
+      ),
+      shape: new CircleBorder(),
+      elevation: 2.0,
+      fillColor: Colors.white,
+      padding: const EdgeInsets.all(15.0),
+    ));
+
     return Scaffold(
       appBar: AppBar(
-
-        title: Text("UnB"),
+        title: Text("Aplicação IHC"),
         actions: <Widget>[
           IconButton(
               icon: Icon(FontAwesomeIcons.search),
               onPressed: () {
-                //
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => DetailScreen())
+                // );
               }),
         ],
       ),
@@ -38,6 +64,7 @@ class HomePageState extends State<HomePage> {
           _buildGoogleMap(context),
           _zoomminusfunction(),
           _zoomplusfunction(),
+          filterButton,
         ],
       ),
       drawer: Hamburger(),
@@ -45,7 +72,6 @@ class HomePageState extends State<HomePage> {
   }
 
  Widget _zoomminusfunction() {
-
     return Align(
       alignment: Alignment.topLeft,
       child: IconButton(
@@ -80,32 +106,55 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildGoogleMap(BuildContext context) {
+
+    Marker buildMarker(id, position, name, iconColor, idNum){
+      return Marker(
+        markerId: MarkerId(id),
+        position: position,
+        infoWindow: InfoWindow(title: name, 
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DetailScreen(idNum)),
+            );
+          } ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            iconColor,
+          ),
+      );
+    }
+
+    var marker1 = buildMarker('unbb1', LatLng(-15.763105, -47.870634), "UnB - Banheiro Exemplo 1", BitmapDescriptor.hueCyan, 0);
+    var marker2 = buildMarker('unbb2', LatLng(-15.763505, -47.870234), "UnB - Banheiro Exemplo 2", BitmapDescriptor.hueCyan, 1);
+    var marker3 = buildMarker('unbb3', LatLng(-15.763205, -47.870434), "UnB - Banheiro Exemplo 3", BitmapDescriptor.hueCyan, 2);
+    var marker4 = buildMarker('unbb4', LatLng(-15.762105, -47.870434), "UnB - Bebedouro Exemplo 1", BitmapDescriptor.hueViolet, 3);
+    var marker5 = buildMarker('unbb5', LatLng(-15.762985, -47.870134), "UnB - Bebedouro Exemplo 2", BitmapDescriptor.hueViolet, 4);
+
+
+    buildMarkers(){
+      if(dataInstance.currBathroomFilter && dataInstance.currGoodConditionFilter){
+        return {marker2, marker3};
+      }
+      if(dataInstance.currBathroomFilter){
+        return {marker1, marker2, marker3};
+      }
+      if(dataInstance.currWaterFilter){
+        return {marker4, marker5};
+      }
+      return {marker1,marker2, marker3, marker4, marker5};
+    }
+    
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition:  CameraPosition(target: LatLng(-15.763105, -47.870634), zoom: 12),
+        initialCameraPosition:  CameraPosition(target: LatLng(-15.763105, -47.870634), zoom: 18),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
 
-        markers: {
-          Marker(
-            markerId: MarkerId('unb'),
-            position: LatLng(-15.763105, -47.870634),
-            infoWindow: InfoWindow(title: 'UnB', 
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DetailScreen()),
-                );
-              } ),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueViolet,
-              ),
-          )
-        },
+        markers: buildMarkers(),
       ),
     );
   }
@@ -127,47 +176,3 @@ class HomePageState extends State<HomePage> {
 //       BitmapDescriptor.hueViolet,
 //     ),
 //   );
-  
-Marker bernardinMarker = Marker(
-  markerId: MarkerId('bernardin'),
-  position: LatLng(40.761421, -73.981667),
-  infoWindow: InfoWindow(title: 'Le Bernardin'),
-  icon: BitmapDescriptor.defaultMarkerWithHue(
-    BitmapDescriptor.hueViolet,
-  ),
-);
-Marker blueMarker = Marker(
-  markerId: MarkerId('bluehill'),
-  position: LatLng(40.732128, -73.999619),
-  infoWindow: InfoWindow(title: 'Blue Hill'),
-  icon: BitmapDescriptor.defaultMarkerWithHue(
-    BitmapDescriptor.hueViolet,
-  ),
-);
-
-//New York Marker
-
-Marker newyork1Marker = Marker(
-  markerId: MarkerId('newyork1'),
-  position: LatLng(40.742451, -74.005959),
-  infoWindow: InfoWindow(title: 'Los Tacos'),
-  icon: BitmapDescriptor.defaultMarkerWithHue(
-    BitmapDescriptor.hueViolet,
-  ),
-);
-Marker newyork2Marker = Marker(
-  markerId: MarkerId('newyork2'),
-  position: LatLng(40.729640, -73.983510),
-  infoWindow: InfoWindow(title: 'Tree Bistro'),
-  icon: BitmapDescriptor.defaultMarkerWithHue(
-    BitmapDescriptor.hueViolet,
-  ),
-);
-Marker newyork3Marker = Marker(
-  markerId: MarkerId('newyork3'),
-  position: LatLng(40.719109, -74.000183),
-  infoWindow: InfoWindow(title: 'Le Coucou'),
-  icon: BitmapDescriptor.defaultMarkerWithHue(
-    BitmapDescriptor.hueViolet,
-  ),
-);

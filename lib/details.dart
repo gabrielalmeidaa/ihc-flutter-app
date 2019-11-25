@@ -5,80 +5,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ihc_project/favorite.dart';
+import 'package:ihc_project/homepage.dart';
+import 'package:ihc_project/main.dart';
 import 'package:ihc_project/ratings.dart';
 import 'package:ihc_project/report_problem.dart';
 import 'package:ihc_project/status.dart';
 
 class DetailScreen extends StatelessWidget {
+  var currIndex = 0;
 
-  Widget textSection = Container(
-  padding: const EdgeInsets.all(32),
-  child: Text(
-    'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-        'Alps. Situated 1,578 meters above sea level, it is one of the '
-        'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-        'half-hour walk through pastures and pine forest, leads you to the '
-        'lake, which warms to 20 degrees Celsius in the summer. Activities '
-        'enjoyed here include rowing, and riding the summer toboggan run.',
-    softWrap: true,
-    ),
-  );
-
-  Widget itemRating = Container(
-    child: Row(
-      children: [
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 1),
-            child: Text(
-              'Qualidade Número 1',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          
-          FlutterRatingBar(
-            initialRating: 3,
-            itemSize: 24,
-            fillColor: Colors.amber,
-            borderColor: Colors.amber.withAlpha(50),
-            allowHalfRating: false,
-            onRatingUpdate: (rating) {
-                print(rating);
-            },
-        ),
-      ],
-    ),
-  );
-
-  Widget titleSection = Container(
-    padding: const EdgeInsets.all(32),
-    child: Row(
-      children: [
-        Expanded(
-          /*1*/
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /*2*/
-              Container(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Oeschinen Lake Campground',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+  Widget buildItemRating(text, double rating){
+    return Container(
+      child: Row(
+        children: [
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 1),
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              ItemStatusWidget(),
-            ],
+            ),
+            
+            FlutterRatingBarIndicator(
+              rating: rating,
+              itemSize: 16,
+              fillColor: Colors.amber,
+              emptyColor: Colors.grey[400],
           ),
-        ),
-        /*3*/
-        FavoriteWidget(),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }  
+
+  Widget buildTitleSection(name){
+      return Container(
+      padding: const EdgeInsets.all(32),
+      child: Row(
+        children: [
+          Expanded(
+            /*1*/
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /*2*/
+                Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                ItemStatusWidget(),
+              ],
+            ),
+          ),
+          /*3*/
+          FavoriteWidget(),
+        ],
+      ),
+    );
+  }
+
+  DetailScreen(idNum){
+    currIndex = idNum;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,12 +90,16 @@ class DetailScreen extends StatelessWidget {
               if(label == "AVALIAR"){
                  Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RatingsScreen()),
+                  MaterialPageRoute(builder: (context) => RatingsScreen(currIndex)),
                 );
+              } else if (label == "VOLTAR") {
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomePage()
+                ));
               } else {
                  Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ReportProblemScreen()),
+                  MaterialPageRoute(builder: (context) => ReportProblemScreen(currIndex)),
                 );
               }
             },
@@ -126,6 +124,7 @@ class DetailScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          _buildButtonColumn(color, Icons.arrow_back, "VOLTAR"),
           _buildButtonColumn(color, Icons.feedback, 'AVALIAR'),
           _buildButtonColumn(Colors.yellow[600], Icons.report_problem, 'REPORTAR PROBLEMA'),
         ],
@@ -133,23 +132,32 @@ class DetailScreen extends StatelessWidget {
     );
 
     return MaterialApp(
-      title: 'Welcome to Flutter',
+      title: "Detalhes",
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Welcome to Flutter'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.popUntil(
+                context, 
+                (route) => route.isFirst
+              );
+            },
+          ),
+          title: Text("Detalhes"),
         ),
         body: ListView(
           children: [
             Image.asset(
-              'images/lake.jpg',
+              dataInstance.itemPictures[currIndex],
               width: 600,
               height: 240,
               fit: BoxFit.cover,
             ),
-            titleSection,
-            itemRating,
-            itemRating,
-            itemRating,
+            buildTitleSection(dataInstance.itemNames[currIndex]),
+            buildItemRating("Limpeza", dataInstance.itemRatings[currIndex][0]),
+            buildItemRating("Acessibilidade", dataInstance.itemRatings[currIndex][3]),
+            buildItemRating("Conforto", dataInstance.itemRatings[currIndex][4]),
             buttonSection,
           ],
         ),

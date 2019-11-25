@@ -3,12 +3,18 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ihc_project/details.dart';
 import 'package:ihc_project/dropdown_list.dart';
+import 'package:ihc_project/main.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ReportProblemScreen extends StatelessWidget {
+
+  var currIndex = 0;
+
+  ReportProblemScreen(idNum){
+    currIndex = idNum;
+  }
 
   Widget textSection = Container(
   padding: const EdgeInsets.all(32),
@@ -23,38 +29,40 @@ class ReportProblemScreen extends StatelessWidget {
     ),
   );
 
-  Widget titleSection = Container(
-    padding: const EdgeInsets.all(32),
-    child: Row(
-      children: [
-        Expanded(
-          /*1*/
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /*2*/
-              Container(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Oeschinen Lake Campground',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+  Widget buildTitleSection(name){
+    return Container(
+      padding: const EdgeInsets.all(32),
+      child: Row(
+        children: [
+          Expanded(
+            /*1*/
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /*2*/
+                Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                'Escolha o problema ocorrido na lista abaixo!',
-                style: TextStyle(
-                  color: Colors.grey[500],
-                ),
-              )
-            ],
+                Text(
+                  'Escolha o problema ocorrido na lista abaixo!',
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        /*3*/
-      ],
-    ),
-  );
+          /*3*/
+        ],
+      ),
+    );
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +74,7 @@ class ReportProblemScreen extends StatelessWidget {
         children: [
           ButtonBar(
             children: [
-              FlatButton(child: Text("Voltar"), onPressed: () {print("does nothing.");},),
+              FlatButton(child: Text("Voltar"), onPressed: () {Navigator.pop(context);},),
               RaisedButton(
                 child: Text("Concluir", style: TextStyle(color: Colors.white)),
                 color: Colors.green[500], 
@@ -84,9 +92,10 @@ class ReportProblemScreen extends StatelessWidget {
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                         onPressed: () {
+                         Navigator.pop(context);
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => DetailScreen())
+                            context, 
+                            MaterialPageRoute(builder: (context) => DetailScreen(currIndex))
                           );
                         },
                         width: 120,
@@ -102,20 +111,20 @@ class ReportProblemScreen extends StatelessWidget {
     );
 
     return MaterialApp(
-      title: 'Avaliar',
+      title: 'Reportar Problema',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Avaliar'),
+          title: Text('Reportar Problema'),
         ),
         body: ListView(
           children: [
             Image.asset(
-              'images/lake.jpg',
+              dataInstance.itemPictures[currIndex],
               width: 600,
               height: 240,
               fit: BoxFit.cover,
             ),
-            titleSection,
+            buildTitleSection(dataInstance.itemNames[currIndex]),
             DropdownWidget(),
             buttonSection,
           ],

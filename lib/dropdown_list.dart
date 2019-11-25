@@ -19,16 +19,24 @@ class _DropdownWidgetState extends State<DropdownWidget> {
           DropdownButton(
             items: [
               DropdownMenuItem<String>(
-                  child: Text('Item 1'),
+                  child: Text('Item Quebrado.'),
                   value: 'one',
                 ),
               DropdownMenuItem<String>(
-                child: Text('Item 2'),
+                child: Text('Item Desligável.'),
                 value: 'two',
               ),
               DropdownMenuItem<String>(
-                child: Text('Item 3'),
+                child: Text('Item Inalcançável.'),
                 value: 'three',
+              ),
+              DropdownMenuItem<String>(
+                child: Text('Item Interditado.'),
+                value: 'four',
+              ),
+              DropdownMenuItem<String>(
+                child: Text('Item em Conserto.'),
+                value: 'five',
               ),
             ],
             value: currentSelectedValue,

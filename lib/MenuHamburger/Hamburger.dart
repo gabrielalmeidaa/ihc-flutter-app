@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ihc_project/favorite_list.dart';
 
 class Hamburger extends StatelessWidget {
 
@@ -32,8 +33,10 @@ class Hamburger extends StatelessWidget {
                 ListTile(
                     title: Row( mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[ Icon(Icons.favorite, color: Colors.white), SizedBox(width: 25), Text("FAVORITOS", style: MyCustomTextStyle) ],),
                     onTap: () {
-                        // Update the state of the app.
-                        // ...
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FavoriteListWidget()),
+                      );
                     },
                 ),
 
@@ -43,14 +46,6 @@ class Hamburger extends StatelessWidget {
                     // Update the state of the app.
                     // ...
                   },
-                ),
-
-                ListTile(
-                  title: Row( mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[ Icon(Icons.crop_square, color: Colors.white), SizedBox(width: 25), Text("дpyr", style: MyCustomTextStyle) ],),
-                    onTap: () {
-                        // Update the state of the app.
-                        // ...
-                    },
                 ),
 
                   ListTile(
